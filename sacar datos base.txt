@@ -1,0 +1,10 @@
+
+
+
+database
+python manage.py dumpdata > backup.json
+python manage.py migrate --run-syncdb
+python manage.py loaddata backup.json
+
+sql list
+https://programandoointentandolo.com/2017/06/buscar-registros-repetidos-sql.html

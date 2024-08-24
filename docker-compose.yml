@@ -1,0 +1,45 @@
+version: '3.4'
+services:
+  db:
+    image: mysql:9.0.1
+    container_name: RUIeDB
+    restart: always
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./sql_files:/home/
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
+      timeout: 20s
+      retries: 10
+
+  web:
+    container_name: RUIeApp
+    restart: always
+    build: ./django-server
+    command: python manage.py runserver 0.0.0.0:8000
+    expose:
+      - 8000
+    env_file:
+      - .env
+    volumes: 
+      - ./django-server:/usr/src/backendRUIe/
+      - ./django-server/static_volume:/usr/src/backendRUIe/staticfiles
+    links:
+      - db
+
+  nginx:
+    container_name: RUIeNginx
+    build: ./nginx
+    ports:
+      - 8080:80
+    links:
+      - web
+    volumes:
+      - ./django-server/static_volume:/usr/src/backendRUIe/staticfiles

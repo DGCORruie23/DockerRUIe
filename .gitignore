@@ -1,0 +1,12 @@
+/mysql_data
+/sql_files
+/django-server/static
+/django-server/tmp
+/django-server/db.sqlite3
+/django-server/rescates.json
+*__pycache__
+**/__pycache__/**
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+.DS_Store
